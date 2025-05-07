@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Export Ring Events to CSV</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <style>
+    body {
+      font-family: system-ui, sans-serif;
+      max-width: 700px;
+      margin: 2rem auto;
+      padding: 1rem;
+      line-height: 1.6;
+      background: #f9f9f9;
+      color: #333;
+    }
+    h1 {
+      font-size: 1.8rem;
+      color: #111;
+    }
+    .bookmarklet {
+      display: inline-block;
+      background: #0074cc;
+      color: white;
+      padding: 0.5rem 1rem;
+      border-radius: 6px;
+      text-decoration: none;
+      font-weight: bold;
+    }
+    code {
+      background: #eee;
+      padding: 0.2rem 0.4rem;
+      border-radius: 4px;
+    }
+    .note {
+      font-size: 0.9rem;
+      color: #666;
+      margin-top: 1rem;
+    }
+  </style>
+</head>
+<body>
+
+  <h1>Export Ring Events to CSV</h1>
+
+  <p>This tool lets you export a CSV file of your Ring.com event history (including date, title, and location) from the <a href="https://ring.com/account/history" target="_blank">Ring event history page</a>.</p>
+
+  <p><strong>Step 1:</strong> Drag this button to your bookmarks bar:</p>
+
+  <p>
+    <a class="bookmarklet" href="javascript:(function()%7Bjavascript%3A(()%20%3D%3E%20%7B%0A%20%20function%20escapeCSV(val)%20%7B%0A%20%20%20%20return%20%60%22%24%7B(val%20%7C%7C%20'').replace(%2F%22%2Fg%2C%20'%22%22')%7D%22%60%3B%0A%20%20%7D%0A%0A%20%20const%20items%20%3D%20Array.from(document.querySelectorAll('article%5Bdata-testid%3D%22event-item%22%5D'))%3B%0A%20%20const%20rows%20%3D%20%5B%5B'Device'%2C%20'Event'%2C%20'Date'%2C%20'Time'%5D%5D%3B%0A%0A%20%20items.forEach(item%20%3D%3E%20%7B%0A%20%20%20%20const%20device%20%3D%20item.querySelector('%5Bclass*%3D%22DeviceName%22%5D').textContent.trim()%3B%0A%20%20%20%20const%20event%20%3D%20item.querySelector('%5Bdata-testid%3D%22event-item__event-kind%22%5D').textContent.trim()%3B%0A%20%20%20%20const%20dateElems%20%3D%20item.querySelectorAll('%5Bclass*%3D%22DateTimeContainer%22%5D')%3B%0A%20%20%20%20const%20date%20%3D%20dateElems%5B0%5D%3F.textContent.trim()%20%7C%7C%20''%3B%0A%20%20%20%20const%20time%20%3D%20dateElems%5B1%5D%3F.textContent.trim()%20%7C%7C%20''%3B%0A%0A%20%20%20%20rows.push(%5Bdevice%2C%20event%2C%20date%2C%20time%5D.map(escapeCSV))%3B%0A%20%20%7D)%3B%0A%0A%20%20const%20csvContent%20%3D%20rows.map(r%20%3D%3E%20r.join('%2C')).join('%5Cn')%3B%0A%20%20const%20blob%20%3D%20new%20Blob(%5BcsvContent%5D%2C%20%7B%20type%3A%20'text%2Fcsv%3Bcharset%3Dutf-8%3B'%20%7D)%3B%0A%20%20const%20link%20%3D%20document.createElement('a')%3B%0A%20%20link.href%20%3D%20URL.createObjectURL(blob)%3B%0A%20%20link.download%20%3D%20'ring_event_history.csv'%3B%0A%20%20link.click()%3B%0A%7D)()%3B%7D)()%3B">Ring Export</a>
+  </p>
+
+  <p><strong>Step 2:</strong> Go to <a href="https://ring.com/account/history" target="_blank">ring.com/account/history</a> and click your bookmark.</p>
+
+  <p>The CSV file will be downloaded automatically with your event data.</p>
+
+  <div class="note">
+    ⚠️ This runs entirely in your browser. No data is uploaded or sent anywhere. It just turns what's already on your screen into a CSV file.
+  </div>
+
+</body>
+</html>
