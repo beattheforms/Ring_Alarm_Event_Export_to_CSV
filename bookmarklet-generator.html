@@ -110,20 +110,32 @@
 
   <div class="section">
     <label for="code-textarea">Code:</label>
-    <textarea id="code-textarea">(function() {
-  let csv = 'date,time,description\\n';
-  document.querySelectorAll('.event-row').forEach(row => {
-    const date = row.querySelector('.date')?.innerText || '';
-    const time = row.querySelector('.time')?.innerText || '';
-    const desc = row.querySelector('.desc')?.innerText || '';
-    csv += `"${date}","${time}","${desc}"\\n`;
+    <textarea id="code-textarea">javascript:(() => {
+  function escapeCSV(val) {
+    return `"${(val || '').replace(/"/g, '""')}"`;
+  }
+
+  const items = Array.from(document.querySelectorAll('article[data-testid="event-item"]'));
+  const rows = [['Device', 'Event', 'Date', 'Time']];
+
+  items.forEach(item => {
+    const device = item.querySelector('[class*="DeviceName"]').textContent.trim();
+    const event = item.querySelector('[data-testid="event-item__event-kind"]').textContent.trim();
+    const dateElems = item.querySelectorAll('[class*="DateTimeContainer"]');
+    const date = dateElems[0]?.textContent.trim() || '';
+    const time = dateElems[1]?.textContent.trim() || '';
+
+    rows.push([device, event, date, time].map(escapeCSV));
   });
-  const blob = new Blob([csv], { type: 'text/csv' });
+
+  const csvContent = rows.map(r => r.join(',')).join('\n');
+  const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
   const link = document.createElement('a');
   link.href = URL.createObjectURL(blob);
-  link.download = 'ring-events.csv';
+  link.download = 'ring_event_history.csv';
   link.click();
-})();</textarea>
+})();
+</textarea>
   </div>
 
   <div class="section">
